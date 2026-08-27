@@ -97,8 +97,7 @@ const Intro = (() => {
   const open  = $("#coverOpen");
   const start = $("#introStart");
 
-  const SEEN  = "eldor:kirish";
-  const QAYTA = 6 * 60 * 60 * 1000;   // 6 soat
+  const SEEN = "eldor:kirish";
   let atCover = false;
   let entered = false;
 
@@ -121,7 +120,7 @@ const Intro = (() => {
     if (entered) return;
     entered = true;
 
-    try { localStorage.setItem(SEEN, String(Date.now())); } catch {}
+    try { sessionStorage.setItem(SEEN, "1"); } catch {}
 
     root.classList.add("is-gone");
     document.body.classList.remove("is-locked");
@@ -143,17 +142,18 @@ const Intro = (() => {
       if (!video.muted) video.play().catch(() => {});
     });
 
-    // Videoni yaqinda ko'rgan bo'lsa qayta ko'rsatmaymiz — sahifani
-    // yangilagan odam har safar 6 soniya kutib o'tirmasin. Lekin belgi
-    // 6 soatdan keyin kuchdan qoladi: ertasiga qaytib kirgan odam
-    // kirishni boshidan, to'liq ko'radi.
+    // Kirish faqat SHU tab ochiq turganda takrorlanmaydi:
+    // sahifani yangilagan odam 14 soniya kutib o'tirmaydi. Havolani
+    // qaytadan ochgan har bir odam esa kirishni to'liq ko'radi —
+    // kirish saytning eng muhim joyi, uni yashirib qo'yish noto'g'ri.
+    // Manzil oxiriga ?kirish qo'shilsa — har doim to'liq ko'rsatiladi.
+    const majburiy = /[?&#]kirish/.test(location.href);
     let korilgan = false;
-    try {
-      const t = Number(localStorage.getItem(SEEN)) || 0;
-      korilgan = Date.now() - t < QAYTA;
-    } catch {}
+    if (!majburiy) {
+      try { korilgan = sessionStorage.getItem(SEEN) === "1"; } catch {}
+    }
 
-    if (korilgan || REDUCED) { toCover(); return; }
+    if (korilgan || (REDUCED && !majburiy)) { toCover(); return; }
 
     video.addEventListener("ended", () => toCover());
     video.addEventListener("error", () => toCover());
