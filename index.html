@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Eldor Isarov — Tug'ilgan kun</title>
+<meta name="description" content="Eldor Isarov. 27-avgust 1987. Tug'ilgan kun tabriknomasi.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0a0a0b">
+
+<!-- ====== Havola ko'rinishi (Telegram, WhatsApp, Facebook) ======
+     Manzillar to'liq bo'lishi shart — nisbiy manzil bu yerda ishlamaydi.
+     Sayt domeni o'zgarsa, quyidagi uchta manzilni ham yangilang. -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Tabriknoma">
+<meta property="og:locale" content="uz_UZ">
+<meta property="og:title" content="Eldor Isarov — Tug'ilgan kun">
+<meta property="og:description" content="27-avgust 1987. Suratlar, tilaklar va sizning tilagingiz uchun joy.">
+<meta property="og:url" content="https://eldor-tabrik.netlify.app/">
+<meta property="og:image" content="https://eldor-tabrik.netlify.app/img/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Eldor Isarov — tabriknoma">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Eldor Isarov — Tug'ilgan kun">
+<meta name="twitter:description" content="27-avgust 1987. Suratlar, tilaklar va sizning tilagingiz uchun joy.">
+<meta name="twitter:image" content="https://eldor-tabrik.netlify.app/img/og.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="progress" id="progress" aria-hidden="true"></div>
+
+<!-- ============ KIRISH ============
+     Uch bosqich:
+       1) video/kitob.mp4 — kamera kitobga yaqinlashadi (6s, ovozsiz boshlanadi)
+       2) kadr qorayadi, "tuq" ovozi — kitob yopildi
+       3) img/cover.jpg — yopiq muqova, ustida ism va "Oching"
+
+     Video va muqova bitta 9:16 qutida turadi, shuning uchun
+     ular almashganda kadr joyidan qimirlamaydi. -->
+<div class="intro" id="intro">
+  <div class="intro__stage">
+
+    <video class="intro__video" id="introVideo"
+           src="video/kitob.mp4"
+           muted playsinline preload="auto"
+           disablepictureinpicture></video>
+
+    <div class="cover" id="cover">
+      <img class="cover__img" src="img/cover.jpg" alt="" aria-hidden="true">
+      <div class="cover__shade" aria-hidden="true"></div>
+
+      <!-- Muqovadagi bo'sh taxtachaning ustiga tushadi.
+           Yozuvni AI emas, sayt chizadi — shuning uchun harflar
+           o'tkir va apostroflar joyida. -->
+      <div class="cover__plate">
+        <span class="cover__year">1987</span>
+        <span class="cover__name">Eldor</span>
+        <span class="cover__name">Isarov</span>
+      </div>
+
+      <button class="cover__open" id="coverOpen" type="button">
+        <span class="cover__ring" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#f7e5c0" stroke-width="1.4"
+               stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h14M13 6l6 6-6 6"/>
+          </svg>
+        </span>
+        <span class="cover__label">Oching</span>
+      </button>
+
+      <p class="cover__foot">27-avgust</p>
+    </div>
+
+    <!-- Avtomatik o'ynash to'silsa shu chiqadi (kam uchraydi, lekin
+         Telegram ichidagi brauzerda va quvvat tejash rejimida bo'ladi) -->
+    <button class="intro__start" id="introStart" type="button" hidden>
+      <span class="cover__ring" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="#f7e5c0" stroke="none"><path d="M8 5v14l11-7z"/></svg>
+      </span>
+      <span class="cover__label">Boshlash</span>
+    </button>
+
+    <button class="intro__btn intro__sound" id="introSound" type="button" hidden
+            aria-pressed="false">Ovoz</button>
+    <button class="intro__btn intro__skip"  id="introSkip"  type="button" hidden>O'tkazib yuborish</button>
+
+  </div>
+</div>
+
+<header class="topbar" id="topbar">
+  <span class="topbar__mark">E. I.</span>
+  <span class="topbar__meta" id="topbarDate"></span>
+</header>
+
+<main id="main">
+
+  <!-- ============ 1. HERO ============ -->
+  <section class="hero">
+    <div class="hero__glow" id="heroGlow" aria-hidden="true"></div>
+    <span class="hero__stamp" id="heroStamp" aria-hidden="true"></span>
+
+    <p class="hero__eyebrow"><span class="mask"><i>Tabriknoma</i></span></p>
+
+    <h1 class="hero__title" id="heroTitle" aria-label="Eldor Isarov">
+      <span class="line"><span class="mask" data-word=""></span></span>
+      <span class="line"><span class="mask" data-word=""></span></span>
+    </h1>
+
+    <div class="hero__rule" id="heroRule" aria-hidden="true"></div>
+
+    <p class="hero__meta">
+      <span class="mask"><i id="heroDate"></i></span>
+      <span class="mask"><i id="heroAge"></i></span>
+    </p>
+
+    <div class="hero__cue" aria-hidden="true"><span></span></div>
+  </section>
+
+  <!-- ============ 2. YUGURUVCHI SATR ============ -->
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee__track" id="marqueeTrack"></div>
+  </div>
+
+  <!-- ============ 3. YILLAR ============ -->
+  <section class="years" id="years">
+    <div class="years__row">
+      <span class="years__num" data-reveal id="yearFrom">1985</span>
+      <span class="years__line"></span>
+      <span class="years__num" data-reveal id="yearTo">2026</span>
+    </div>
+    <p class="years__note" data-reveal id="yearsNote"></p>
+  </section>
+
+  <!-- ============ 4. SO'Z BOSHI ============ -->
+  <section class="section lead-section" id="soz">
+    <p class="label" data-reveal><span>01</span> So'z boshi</p>
+    <p class="lead" id="lead"></p>
+  </section>
+
+  <!-- ============ 5. GALEREYA ============ -->
+  <section class="section" id="galereya">
+    <p class="label" data-reveal><span>02</span> Lahzalar</p>
+    <h2 class="h2" data-reveal>Yillar ortida qolgan<br><em>eng issiq kunlar</em></h2>
+    <div class="grid" id="grid"><!-- JS to'ldiradi --></div>
+  </section>
+
+  <!-- ============ 6. IQTIBOS ============ -->
+  <section class="section quote-section">
+    <blockquote class="quote" data-reveal>
+      Yillar insonni qaritmaydi — ular unga yanada ko'proq
+      <em>xotira</em>, ko'proq davra va ko'proq quvonch qo'shadi.
+    </blockquote>
+  </section>
+
+  <!-- ============ 7. TILAKLAR ============ -->
+  <section class="section" id="tilaklar">
+    <p class="label" data-reveal><span>03</span> Tilaklar</p>
+
+    <ol class="wishlist">
+      <li data-reveal>
+        <span class="wishlist__n">01</span>
+        <h3>Sog'liq</h3>
+        <p>Eng avvalo — mustahkam sog'lik. Qolgan hamma narsa shuning ustiga quriladi.</p>
+      </li>
+      <li data-reveal>
+        <span class="wishlist__n">02</span>
+        <h3>Oila</h3>
+        <p>Uyingizdagi kulgi hech qachon tinmasin, dasturxoningiz doim to'kin bo'lsin.</p>
+      </li>
+      <li data-reveal>
+        <span class="wishlist__n">03</span>
+        <h3>Yo'l</h3>
+        <p>Boshlagan har bir ishingiz oxiriga yetsin, har bir yo'lingiz omadli bo'lsin.</p>
+      </li>
+      <li data-reveal>
+        <span class="wishlist__n">04</span>
+        <h3>Vaqt</h3>
+        <p>Yillar shoshilmasin. Eng yaxshi kunlaringiz hali oldinda bo'lsin.</p>
+      </li>
+    </ol>
+  </section>
+
+  <!-- ============ 8. TILAK YOZISH ============ -->
+  <section class="section form-section" id="tilak-yoz">
+    <p class="label" data-reveal><span>04</span> Sizning tilagingiz</p>
+    <h2 class="h2" data-reveal>Tilagingizni <em>yozib qoldiring</em></h2>
+
+    <form class="form" id="wishForm" novalidate>
+      <div class="field" data-reveal>
+        <label for="fName">Ismingiz</label>
+        <input type="text" id="fName" name="name" maxlength="40" autocomplete="name"
+               placeholder="Masalan: Sardor" required>
+      </div>
+
+      <div class="field" data-reveal>
+        <label for="fText">Tilagingiz</label>
+        <textarea id="fText" name="text" rows="4" maxlength="400"
+                  placeholder="Yurakdan chiqqan bir necha satr..." required></textarea>
+        <span class="counter"><span id="charCount">0</span>/400</span>
+      </div>
+
+      <!-- Robotlar uchun tuzoq: odam buni ko'rmaydi, bot to'ldiradi -->
+      <div class="hp" aria-hidden="true">
+        <label for="fSite">Saytingiz</label>
+        <input type="text" id="fSite" name="website" tabindex="-1" autocomplete="off">
+      </div>
+
+      <button type="submit" class="submit" id="submitBtn" data-reveal>
+        <span id="submitText">Tilakni qoldirish</span>
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M5 12h14M13 6l6 6-6 6"/>
+        </svg>
+      </button>
+
+      <p class="form__note" id="formNote" data-reveal>Tilagingiz to'g'ridan-to'g'ri yetkaziladi.</p>
+    </form>
+
+    <div class="wishes" id="wishes" aria-live="polite"></div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <p class="footer__name">Eldor Isarov</p>
+  <p class="footer__year" id="footerYear"></p>
+</footer>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Rasm" hidden>
+  <button class="lightbox__close" id="lbClose" aria-label="Yopish">&times;</button>
+  <button class="lightbox__nav lightbox__nav--prev" id="lbPrev" aria-label="Oldingi">&#8249;</button>
+  <button class="lightbox__nav lightbox__nav--next" id="lbNext" aria-label="Keyingi">&#8250;</button>
+  <figure class="lightbox__figure">
+    <img id="lbImg" alt="">
+    <figcaption id="lbCap"></figcaption>
+  </figure>
+</div>
+
+<!-- ============ MUSIQA ============
+     Fayl: audio/fon.m4a
+     Boshqa qo'shiq qo'ymoqchi bo'lsangiz — faylni audio/ ga tashlab,
+     quyidagi src ni o'zgartiring. Fayl bo'lmasa tugma ko'rinmaydi
+     va sayt xatosiz ishlayveradi. -->
+<audio id="track" src="audio/fon.m4a" loop preload="metadata"></audio>
+
+<button class="music" id="musicBtn" aria-pressed="false" aria-label="Musiqani yoqish" hidden>
+  <span class="music__bars" aria-hidden="true"><i></i><i></i><i></i></span>
+</button>
+
+<script src="js/main.js"></script>
+</body>
+</html>
