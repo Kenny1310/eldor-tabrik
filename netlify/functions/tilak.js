@@ -33,7 +33,14 @@ exports.handler = async (event) => {
 
   if (!TOKEN || !CHAT) {
     console.error("TELEGRAM_BOT_TOKEN yoki TELEGRAM_CHAT_ID sozlanmagan");
-    return javob(500, { ok: false, xato: "Server sozlanmagan" });
+    // Qaysi biri yetishmayotganini aytamiz. Qiymatning O'ZI emas,
+    // faqat "bormi yoki yo'qmi" — token hech qayerga chiqmaydi.
+    return javob(500, {
+      ok: false,
+      xato: "Server sozlanmagan",
+      token: Boolean(TOKEN),
+      chat: Boolean(CHAT),
+    });
   }
 
   let data;
