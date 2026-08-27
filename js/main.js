@@ -132,7 +132,8 @@ const Intro = (() => {
   const open  = $("#coverOpen");
   const start = $("#introStart");
 
-  const SEEN = "eldor:kirish";
+  const SEEN  = "eldor:kirish";
+  const QAYTA = 6 * 60 * 60 * 1000;   // 6 soat
   let atCover = false;
   let entered = false;
 
@@ -161,7 +162,7 @@ const Intro = (() => {
     if (entered) return;
     entered = true;
 
-    try { localStorage.setItem(SEEN, "1"); } catch {}
+    try { localStorage.setItem(SEEN, String(Date.now())); } catch {}
 
     root.classList.add("is-gone");
     document.body.classList.remove("is-locked");
@@ -183,22 +184,40 @@ const Intro = (() => {
       if (!video.muted) video.play().catch(() => {});
     });
 
+    // Videoni yaqinda ko'rgan bo'lsa qayta ko'rsatmaymiz — sahifani
+    // yangilagan odam har safar 6 soniya kutib o'tirmasin. Lekin belgi
+    // 6 soatdan keyin kuchdan qoladi: ertasiga qaytib kirgan odam
+    // kirishni boshidan, to'liq ko'radi.
     let korilgan = false;
-    try { korilgan = localStorage.getItem(SEEN) === "1"; } catch {}
+    try {
+      const t = Number(localStorage.getItem(SEEN)) || 0;
+      korilgan = Date.now() - t < QAYTA;
+    } catch {}
 
-    // Ikkinchi marta kirganda yoki harakat kamaytirilgan bo'lsa —
-    // videoni umuman ko'rsatmaymiz, to'g'ridan muqova.
     if (korilgan || REDUCED) { toCover(true); return; }
 
     video.addEventListener("ended", () => toCover(false));
     video.addEventListener("error", () => toCover(true));
 
-    // Zaxira: "ended" ba'zi brauzerlarda kelmay qolishi mumkin
-    video.addEventListener("loadedmetadata", () => {
-      const qoldi = (video.duration || 6) * 1000 + 900;
-      setTimeout(() => toCover(false), qoldi);
-    });
-    setTimeout(() => { if (!atCover) toCover(true); }, 12000);
+    // Zaxira taymer: "ended" ba'zi brauzerlarda kelmay qoladi.
+    // U faqat video ROSTDAN o'ynayotganda ishga tushadi — aks holda
+    // "Boshlash" tugmasini o'qib ulgurmagan odamni muqovaga
+    // sudrab ketardi.
+    let guard = null;
+    const armGuard = () => {
+      clearTimeout(guard);
+      const qoldi = Math.max(0, (video.duration || 6) - video.currentTime) * 1000 + 900;
+      guard = setTimeout(() => toCover(false), qoldi);
+    };
+    video.addEventListener("playing", armGuard);
+    video.addEventListener("pause", () => clearTimeout(guard));
+
+    // Video umuman yuklanmasa (sekin internet, buzuq fayl) muqovaga
+    // o'tamiz. "Boshlash" chiqib turgan bo'lsa — kutamiz, u yerda
+    // qaror odamniki.
+    setTimeout(() => {
+      if (!atCover && start.hidden && video.paused) toCover(true);
+    }, 8000);
 
     // Avtomatik o'ynash to'silsa muqovaga sakrab o'tmaymiz —
     // "Boshlash" tugmasini chiqaramiz. Bosish bo'lgani uchun
