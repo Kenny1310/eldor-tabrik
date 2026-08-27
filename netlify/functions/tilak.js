@@ -55,8 +55,10 @@ exports.handler = async (event) => {
     return javob(400, { ok: false, xato: "Ism yoki matn o'lchami noto'g'ri" });
   }
 
+  // Sayt nomi ataylab yozilyapti: bitta botni bir nechta tabriknoma
+  // bilan ishlatsangiz, qaysi saytdan kelganini darrov bilasiz.
   const xabar =
-    `🎉 <b>Yangi tilak</b>\n\n` +
+    `🎉 <b>Yangi tilak</b> — Eldor Isarov\n\n` +
     `👤 ${esc(ism)}\n\n` +
     `${esc(matn)}`;
 
