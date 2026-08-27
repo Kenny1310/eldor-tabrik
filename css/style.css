@@ -100,112 +100,55 @@ button{ font:inherit; color:inherit; }
   object-fit:cover;
 }
 
-/* Kitobning yopilishi: kadr 0.28s da qorayib, sal loyqalanadi va
-   ozgina orqaga ketadi. Ko'z qolgan harakatni o'zi to'ldiradi. */
-.intro__video{
-  transition:filter .28s ease-in, transform .28s ease-in, opacity .18s linear .2s;
-}
-.intro.is-shutting .intro__video{
-  filter:brightness(.22) blur(7px) saturate(.7);
-  transform:scale(.955);
-}
-.intro.is-cover .intro__video{ opacity:0; }
+/* Video oxirgi kadrida to'xtaydi va uning ustiga aynan o'sha
+   kadrdan olingan rasm chiqadi — shuning uchun bu yerda hech
+   qanday "yopilish" animatsiyasi kerak emas. Qisqa erish faqat
+   siqilishdan kelgan bir kadrlik farqni yashiraydi. */
+.intro.is-cover .intro__video{ opacity:0; transition:opacity .25s linear .2s; }
 
 /* ---------- Yopiq muqova ---------- */
 .cover{
   position:absolute; inset:0;
-  opacity:0; transform:scale(1.045);
-  transition:opacity .55s var(--ease), transform 1.1s var(--ease);
+  opacity:0;
+  transition:opacity .25s linear;
   pointer-events:none;
 }
-.intro.is-cover .cover{ opacity:1; transform:none; pointer-events:auto; }
+.intro.is-cover .cover{ opacity:1; pointer-events:auto; }
 
-/* Charm juda yorug' — saytning qoraligiga yaqinlashtiramiz */
-.cover__shade{
-  position:absolute; inset:0;
-  background:
-    radial-gradient(115% 75% at 52% 37%,
-      rgba(0,0,0,0) 0%, rgba(0,0,0,.42) 58%, rgba(0,0,0,.86) 100%),
-    linear-gradient(180deg, rgba(12,9,6,.34), rgba(12,9,6,.06) 38%, rgba(12,9,6,.62));
-}
-
-/* Yozuv aynan muqovadagi bo'sh taxtachaning ustiga tushadi */
-.cover__plate{
-  position:absolute;
-  left:27.6%; top:26.7%; width:53.4%; height:22.1%;
-  display:grid; align-content:center; justify-items:center;
-  text-align:center;
-}
-.cover__year{
-  font-size:min(4vw, 2.25svh);
-  font-size:4cqw;
-  letter-spacing:.44em; text-indent:.44em;
-  color:rgba(255,233,196,.66);
-  text-shadow:0 1px 0 rgba(58,30,8,.8);
-  margin-bottom:.5em;
-}
-.cover__name{
-  display:block;
-  font-family:var(--serif);
-  font-size:min(11.4vw, 6.41svh);
-  font-size:15cqw;
-  line-height:.96; letter-spacing:.015em;
-  color:#f7e5c0;
-  text-shadow:
-    0 1px 0   rgba(72,40,12,.9),
-    0 2px 4px rgba(38,19,4,.55),
-    0 0 26px  rgba(255,196,110,.16);
-}
-
-/* ---------- "Oching" ---------- */
+/* Butun muqova bosiladi — halqani aniq nishonga olish shart emas */
 .cover__open{
-  position:absolute; left:50%; top:60%;
-  transform:translateX(-50%);
-  display:grid; justify-items:center; gap:.85em;
-  padding:1.1em 1.4em;
-  background:none; border:0; cursor:pointer;
+  position:absolute; inset:0;
+  width:100%; height:100%;
+  background:none; border:0; padding:0; cursor:pointer;
   -webkit-tap-highlight-color:transparent;
 }
-.cover__ring{
-  position:relative;
-  width:min(14vw, 7.9svh); width:15cqw; aspect-ratio:1; border-radius:50%;
-  border:1px solid rgba(255,228,186,.5);
-  display:grid; place-items:center;
-  background:rgba(30,16,4,.25);
-  backdrop-filter:blur(2px);
-  transition:border-color .4s var(--ease), background .4s var(--ease);
+
+/* Rasmdagi halqaning ustiga tushadigan jonli to'lqin — muqova
+   qotib qolgan surat emas, bosishni kutayotgani bilinsin uchun.
+   O'lchamlar rasmdagi halqadan olingan. */
+.cover__pulse{
+  position:absolute;
+  left:50.1%; top:67.07%;
+  width:15.75%; aspect-ratio:1;
+  transform:translate(-50%,-50%);
+  pointer-events:none;
 }
-.cover__ring::before{
-  content:""; position:absolute; inset:-1px; border-radius:50%;
-  border:1px solid rgba(255,214,150,.45);
+.cover__pulse::before{
+  content:""; position:absolute; inset:0; border-radius:50%;
+  border:1px solid rgba(255,224,180,.5);
   animation:ringPulse 2.8s var(--ease) infinite;
 }
-.cover__ring svg{ width:38%; height:38%; opacity:.85; }
-.cover__open:hover .cover__ring,
-.cover__open:focus-visible .cover__ring{
-  border-color:rgba(255,236,205,.9); background:rgba(60,32,8,.4);
-}
-.cover__label{
-  font-size:min(3.6vw, 2.03svh);
-  font-size:3.8cqw;
-  letter-spacing:.34em; text-indent:.34em; text-transform:uppercase;
-  color:rgba(255,235,205,.82);
-  text-shadow:0 1px 3px rgba(30,14,2,.9);
-}
+
 @keyframes ringPulse{
-  0%   { transform:scale(1);    opacity:.55 }
-  70%  { transform:scale(1.85); opacity:0 }
-  100% { transform:scale(1.85); opacity:0 }
+  0%   { transform:scale(1);    opacity:.6 }
+  70%  { transform:scale(1.9);  opacity:0 }
+  100% { transform:scale(1.9);  opacity:0 }
 }
 
-.cover__foot{
-  position:absolute; left:0; right:0; bottom:6.5%;
-  text-align:center;
-  font-size:min(3.2vw, 1.8svh);
-  font-size:3.4cqw;
-  letter-spacing:.3em; text-indent:.3em;
-  color:rgba(255,230,196,.45);
-  text-shadow:0 1px 3px rgba(20,10,2,.9);
+/* Faqat ekran o'quvchilar uchun */
+.sr{
+  position:absolute; width:1px; height:1px; overflow:hidden;
+  clip:rect(0 0 0 0); clip-path:inset(50%); white-space:nowrap;
 }
 
 /* Avtomatik o'ynash to'silsa — o'rtada shu tugma chiqadi.

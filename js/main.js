@@ -82,47 +82,12 @@ const watch = (sel) => $$(sel).forEach((n) => io.observe(n));
    Bosqichlar:
      a) video ovozsiz o'ynaydi (brauzerlar ovozli avtomatik
         o'ynatishga ruxsat bermaydi — "Ovoz" tugmasi bor)
-     b) video tugaydi → kadr qorayib loyqalanadi + "tuq" ovozi
-        → yopiq muqova chiqadi. Yopilish harakatini ko'rsatmaymiz,
-        ko'z uni o'zi to'ldiradi.
+     b) video o'zining oxirgi kadrida — yozuvli muqovada — to'xtaydi,
+        ustiga aynan o'sha kadrdan olingan rasm chiqadi. Video va
+        rasm bir xil bo'lgani uchun almashish ko'rinmaydi.
      c) "Oching" bosiladi → sayt ochiladi va musiqa OVOZ BILAN
         yonadi. Ovoz aynan shu bosish tufayli mumkin bo'ladi.
    ========================================================= */
-
-/* Muqovaning "tuq" etgani. Fayl kerak emas — brauzerning o'zi
-   yasaydi: past chastotali zarb + qisqa qog'oz shitiri. */
-function thud() {
-  try {
-    const AC = window.AudioContext || window.webkitAudioContext;
-    if (!AC) return;
-    const ac = new AC();
-    if (ac.state === "suspended") ac.resume().catch(() => {});
-    const t = ac.currentTime;
-
-    const osc = ac.createOscillator();
-    const g   = ac.createGain();
-    osc.type = "sine";
-    osc.frequency.setValueAtTime(150, t);
-    osc.frequency.exponentialRampToValueAtTime(44, t + 0.17);
-    g.gain.setValueAtTime(0.0001, t);
-    g.gain.exponentialRampToValueAtTime(0.5, t + 0.012);
-    g.gain.exponentialRampToValueAtTime(0.0001, t + 0.4);
-    osc.connect(g).connect(ac.destination);
-    osc.start(t); osc.stop(t + 0.42);
-
-    const len = Math.floor(ac.sampleRate * 0.22);
-    const buf = ac.createBuffer(1, len, ac.sampleRate);
-    const dat = buf.getChannelData(0);
-    for (let i = 0; i < len; i++) {
-      dat[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3);
-    }
-    const noise = ac.createBufferSource(); noise.buffer = buf;
-    const hp = ac.createBiquadFilter(); hp.type = "highpass"; hp.frequency.value = 1500;
-    const ng = ac.createGain(); ng.gain.value = 0.14;
-    noise.connect(hp).connect(ng).connect(ac.destination);
-    noise.start(t);
-  } catch { /* ovoz bo'lmasa ham kirish ishlayveradi */ }
-}
 
 const Intro = (() => {
   const root  = $("#intro");
@@ -137,9 +102,9 @@ const Intro = (() => {
   let atCover = false;
   let entered = false;
 
-  /* Muqova bosqichiga o'tish. darrov=true bo'lsa yopilish
-     animatsiyasisiz — takroriy tashriflar uchun. */
-  function toCover(darrov) {
+  /* Muqova bosqichiga o'tish. Muqova rasmi videoning oxirgi kadri
+     bo'lgani uchun bu yerda alohida o'tish animatsiyasi yo'q. */
+  function toCover() {
     if (atCover) return;
     atCover = true;
 
@@ -148,13 +113,7 @@ const Intro = (() => {
     start.hidden = true;
     try { video.pause(); } catch {}
 
-    if (darrov) {
-      root.classList.add("is-shutting", "is-cover");
-      return;
-    }
-    root.classList.add("is-shutting");
-    thud();
-    setTimeout(() => root.classList.add("is-cover"), 260);
+    root.classList.add("is-cover");
   }
 
   /* Kitob ochildi — sayt boshlanadi */
@@ -175,7 +134,7 @@ const Intro = (() => {
 
   function init() {
     open.addEventListener("click", enter);
-    skip.addEventListener("click", () => toCover(false));
+    skip.addEventListener("click", () => toCover());
 
     sound.addEventListener("click", () => {
       video.muted = !video.muted;
@@ -194,10 +153,10 @@ const Intro = (() => {
       korilgan = Date.now() - t < QAYTA;
     } catch {}
 
-    if (korilgan || REDUCED) { toCover(true); return; }
+    if (korilgan || REDUCED) { toCover(); return; }
 
-    video.addEventListener("ended", () => toCover(false));
-    video.addEventListener("error", () => toCover(true));
+    video.addEventListener("ended", () => toCover());
+    video.addEventListener("error", () => toCover());
 
     // Zaxira taymer: "ended" ba'zi brauzerlarda kelmay qoladi.
     // U faqat video ROSTDAN o'ynayotganda ishga tushadi — aks holda
@@ -207,7 +166,7 @@ const Intro = (() => {
     const armGuard = () => {
       clearTimeout(guard);
       const qoldi = Math.max(0, (video.duration || 6) - video.currentTime) * 1000 + 900;
-      guard = setTimeout(() => toCover(false), qoldi);
+      guard = setTimeout(() => toCover(), qoldi);
     };
     video.addEventListener("playing", armGuard);
     video.addEventListener("pause", () => clearTimeout(guard));
@@ -216,7 +175,7 @@ const Intro = (() => {
     // o'tamiz. "Boshlash" chiqib turgan bo'lsa — kutamiz, u yerda
     // qaror odamniki.
     setTimeout(() => {
-      if (!atCover && start.hidden && video.paused) toCover(true);
+      if (!atCover && start.hidden && video.paused) toCover();
     }, 8000);
 
     // Avtomatik o'ynash to'silsa muqovaga sakrab o'tmaymiz —
@@ -228,7 +187,7 @@ const Intro = (() => {
       video.muted = false;
       sound.classList.add("is-on");
       sound.setAttribute("aria-pressed", "true");
-      video.play().catch(() => { video.muted = true; video.play().catch(() => toCover(true)); });
+      video.play().catch(() => { video.muted = true; video.play().catch(() => toCover()); });
     });
 
     const p = video.play();

@@ -36,45 +36,31 @@
 <div class="progress" id="progress" aria-hidden="true"></div>
 
 <!-- ============ KIRISH ============
-     Uch bosqich:
-       1) video/kitob.mp4 — kamera kitobga yaqinlashadi (6s, ovozsiz boshlanadi)
-       2) kadr qorayadi, "tuq" ovozi — kitob yopildi
-       3) img/cover.jpg — yopiq muqova, ustida ism va "Oching"
+     video/kirish.mp4 — 14 soniya: kamera suratga yaqinlashadi,
+     surat charm kitobga aylanadi, muqovada ism paydo bo'ladi.
 
-     Video va muqova bitta 9:16 qutida turadi, shuning uchun
-     ular almashganda kadr joyidan qimirlamaydi. -->
+     img/cover.jpg — o'sha videoning AYNAN OXIRGI KADRI. Video
+     tugagach shu rasm ustiga chiqadi va video to'xtaydi. Ikkalasi
+     bir xil kadr bo'lgani uchun almashish ko'zga tashlanmaydi.
+
+     Yozuv videoning ichida — shuning uchun sayt ustidan hech
+     narsa yozmaydi. Butun muqova bosiladigan qilingan: dadangiz
+     halqani aniq nishonga olmasa ham, qayerni bossa ochiladi. -->
 <div class="intro" id="intro">
   <div class="intro__stage">
 
     <video class="intro__video" id="introVideo"
-           src="video/kitob.mp4"
+           src="video/kirish.mp4"
            muted playsinline preload="auto"
            disablepictureinpicture></video>
 
     <div class="cover" id="cover">
-      <img class="cover__img" src="img/cover.jpg" alt="" aria-hidden="true">
-      <div class="cover__shade" aria-hidden="true"></div>
-
-      <!-- Muqovadagi bo'sh taxtachaning ustiga tushadi.
-           Yozuvni AI emas, sayt chizadi — shuning uchun harflar
-           o'tkir va apostroflar joyida. -->
-      <div class="cover__plate">
-        <span class="cover__year">1987</span>
-        <span class="cover__name">Eldor</span>
-        <span class="cover__name">Isarov</span>
-      </div>
+      <img class="cover__img" src="img/cover.jpg" alt="Eldor Isarov, 1987">
 
       <button class="cover__open" id="coverOpen" type="button">
-        <span class="cover__ring" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#f7e5c0" stroke-width="1.4"
-               stroke-linecap="round" stroke-linejoin="round">
-            <path d="M5 12h14M13 6l6 6-6 6"/>
-          </svg>
-        </span>
-        <span class="cover__label">Oching</span>
+        <span class="cover__pulse" aria-hidden="true"></span>
+        <span class="sr">Oching</span>
       </button>
-
-      <p class="cover__foot">27-avgust</p>
     </div>
 
     <!-- Avtomatik o'ynash to'silsa shu chiqadi (kam uchraydi, lekin
