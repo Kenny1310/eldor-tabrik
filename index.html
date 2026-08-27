@@ -6,7 +6,7 @@
 <title>Eldor Isarov — Tug'ilgan kun</title>
 <meta name="description" content="Eldor Isarov. 27-avgust 1987. Tug'ilgan kun tabriknomasi.">
 <meta name="robots" content="noindex, nofollow">
-<meta name="theme-color" content="#0a0a0b">
+<meta name="theme-color" content="#efe4d2">
 
 <!-- ====== Havola ko'rinishi (Telegram, WhatsApp, Facebook) ======
      Manzillar to'liq bo'lishi shart — nisbiy manzil bu yerda ishlamaydi.
@@ -26,9 +26,10 @@
 <meta name="twitter:title" content="Eldor Isarov — Tug'ilgan kun">
 <meta name="twitter:description" content="27-avgust 1987. Suratlar, tilaklar va sizning tilagingiz uchun joy.">
 <meta name="twitter:image" content="https://eldor-tabrik.netlify.app/img/og.jpg">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Caveat:wght@500;600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -86,96 +87,99 @@
 
 <main id="main">
 
-  <!-- ============ 1. HERO ============ -->
-  <section class="hero">
-    <div class="hero__glow" id="heroGlow" aria-hidden="true"></div>
-    <span class="hero__stamp" id="heroStamp" aria-hidden="true"></span>
+  <!-- ============ 1. TITUL VARAG'I ============ -->
+  <section class="titul" id="titul">
+    <p class="titul__eyebrow">Tabriknoma</p>
 
-    <p class="hero__eyebrow"><span class="mask"><i>Tabriknoma</i></span></p>
-
-    <h1 class="hero__title" id="heroTitle" aria-label="Eldor Isarov">
+    <h1 class="titul__name" id="heroTitle" aria-label="Eldor Isarov">
       <span class="line"><span class="mask" data-word=""></span></span>
       <span class="line"><span class="mask" data-word=""></span></span>
     </h1>
 
-    <div class="hero__rule" id="heroRule" aria-hidden="true"></div>
+    <div class="titul__rule" aria-hidden="true"></div>
 
-    <p class="hero__meta">
-      <span class="mask"><i id="heroDate"></i></span>
-      <span class="mask"><i id="heroAge"></i></span>
+    <p class="titul__meta">
+      <i id="heroDate"></i>
+      <i id="heroAge"></i>
     </p>
 
-    <div class="hero__cue" aria-hidden="true"><span></span></div>
+    <span class="titul__cue" aria-hidden="true"></span>
   </section>
 
-  <!-- ============ 2. YUGURUVCHI SATR ============ -->
-  <div class="marquee" aria-hidden="true">
-    <div class="marquee__track" id="marqueeTrack"></div>
-  </div>
+  <div class="rule" aria-hidden="true"><i>&#9670;</i></div>
 
-  <!-- ============ 3. YILLAR ============ -->
-  <section class="years" id="years">
-    <div class="years__row">
-      <span class="years__num" data-reveal id="yearFrom">1985</span>
-      <span class="years__line"></span>
-      <span class="years__num" data-reveal id="yearTo">2026</span>
-    </div>
-    <p class="years__note" data-reveal id="yearsNote"></p>
-  </section>
-
-  <!-- ============ 4. SO'Z BOSHI ============ -->
-  <section class="section lead-section" id="soz">
-    <p class="label" data-reveal><span>01</span> So'z boshi</p>
+  <!-- ============ 2. BAG'ISHLOV ============ -->
+  <section class="section dedication" id="bagishlov">
+    <p class="label" data-reveal><span>01</span> Bag'ishlov</p>
     <p class="lead" id="lead"></p>
+    <p class="sign" data-reveal>Oilangiz nomidan</p>
   </section>
 
-  <!-- ============ 5. GALEREYA ============ -->
-  <section class="section" id="galereya">
-    <p class="label" data-reveal><span>02</span> Lahzalar</p>
+  <!-- ============ 3. RAQAMLAR ============ -->
+  <section class="section" id="raqamlar">
+    <div class="facts">
+      <div class="fact" data-reveal>
+        <span class="fact__n" id="factYears">0</span>
+        <span class="fact__t">yil</span>
+      </div>
+      <div class="fact" data-reveal>
+        <span class="fact__n" id="factDays">0</span>
+        <span class="fact__t">kun</span>
+      </div>
+      <div class="fact" data-reveal>
+        <span class="fact__n" id="factFrom">0</span>
+        <span class="fact__t">yildan beri</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 4. ALBOM ============ -->
+  <section class="section" id="albom">
+    <p class="label" data-reveal><span>02</span> Albom</p>
     <h2 class="h2" data-reveal>Yillar ortida qolgan<br><em>eng issiq kunlar</em></h2>
     <div class="grid" id="grid"><!-- JS to'ldiradi --></div>
   </section>
 
-  <!-- ============ 6. IQTIBOS ============ -->
-  <section class="section quote-section">
-    <blockquote class="quote" data-reveal>
-      Yillar insonni qaritmaydi — ular unga yanada ko'proq
-      <em>xotira</em>, ko'proq davra va ko'proq quvonch qo'shadi.
-    </blockquote>
-  </section>
-
-  <!-- ============ 7. TILAKLAR ============ -->
+  <!-- ============ 5. TILAKLAR ============ -->
   <section class="section" id="tilaklar">
     <p class="label" data-reveal><span>03</span> Tilaklar</p>
 
     <ol class="wishlist">
       <li data-reveal>
         <span class="wishlist__n">01</span>
-        <h3>Sog'liq</h3>
-        <p>Eng avvalo — mustahkam sog'lik. Qolgan hamma narsa shuning ustiga quriladi.</p>
+        <div>
+          <h3>Sog'liq</h3>
+          <p>Eng avvalo — mustahkam sog'lik. Qolgan hamma narsa shuning ustiga quriladi.</p>
+        </div>
       </li>
       <li data-reveal>
         <span class="wishlist__n">02</span>
-        <h3>Oila</h3>
-        <p>Uyingizdagi kulgi hech qachon tinmasin, dasturxoningiz doim to'kin bo'lsin.</p>
+        <div>
+          <h3>Oila</h3>
+          <p>Uyingizdagi kulgi hech qachon tinmasin, dasturxoningiz doim to'kin bo'lsin.</p>
+        </div>
       </li>
       <li data-reveal>
         <span class="wishlist__n">03</span>
-        <h3>Yo'l</h3>
-        <p>Boshlagan har bir ishingiz oxiriga yetsin, har bir yo'lingiz omadli bo'lsin.</p>
+        <div>
+          <h3>Yo'l</h3>
+          <p>Boshlagan har bir ishingiz oxiriga yetsin, har bir yo'lingiz omadli bo'lsin.</p>
+        </div>
       </li>
       <li data-reveal>
         <span class="wishlist__n">04</span>
-        <h3>Vaqt</h3>
-        <p>Yillar shoshilmasin. Eng yaxshi kunlaringiz hali oldinda bo'lsin.</p>
+        <div>
+          <h3>Vaqt</h3>
+          <p>Yillar shoshilmasin. Eng yaxshi kunlaringiz hali oldinda bo'lsin.</p>
+        </div>
       </li>
     </ol>
   </section>
 
-  <!-- ============ 8. TILAK YOZISH ============ -->
-  <section class="section form-section" id="tilak-yoz">
-    <p class="label" data-reveal><span>04</span> Sizning tilagingiz</p>
-    <h2 class="h2" data-reveal>Tilagingizni <em>yozib qoldiring</em></h2>
+  <!-- ============ 6. MEHMONLAR DAFTARI ============ -->
+  <section class="section" id="daftar">
+    <p class="label" data-reveal><span>04</span> Mehmonlar daftari</p>
+    <h2 class="h2" data-reveal>Bu sahifaga <em>ismingizni</em> qoldiring</h2>
 
     <form class="form" id="wishForm" novalidate>
       <div class="field" data-reveal>
@@ -198,16 +202,22 @@
       </div>
 
       <button type="submit" class="submit" id="submitBtn" data-reveal>
-        <span id="submitText">Tilakni qoldirish</span>
+        <span id="submitText">Daftarga yozish</span>
         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5">
           <path d="M5 12h14M13 6l6 6-6 6"/>
         </svg>
       </button>
 
-      <p class="form__note" id="formNote" data-reveal>Tilagingiz to'g'ridan-to'g'ri yetkaziladi.</p>
+      <p class="form__note" id="formNote" data-reveal>Yozganingiz to'g'ridan-to'g'ri yetkaziladi.</p>
     </form>
 
     <div class="wishes" id="wishes" aria-live="polite"></div>
+  </section>
+
+  <!-- ============ 7. OXIRGI SAHIFA ============ -->
+  <section class="section closing" id="oxiri" data-reveal>
+    <img class="closing__book" src="img/cover.jpg" alt="" aria-hidden="true">
+    <p class="closing__line">Yillaringiz shu kitobning<br>sahifalariga sig'masin.</p>
   </section>
 
 </main>
@@ -228,10 +238,9 @@
 </div>
 
 <!-- ============ MUSIQA ============
-     Fayl: audio/fon.m4a
-     Boshqa qo'shiq qo'ymoqchi bo'lsangiz — faylni audio/ ga tashlab,
-     quyidagi src ni o'zgartiring. Fayl bo'lmasa tugma ko'rinmaydi
-     va sayt xatosiz ishlayveradi. -->
+     Fayl: audio/fon.m4a. Boshqa qo'shiq qo'ymoqchi bo'lsangiz —
+     faylni audio/ ga tashlab, quyidagi src ni o'zgartiring.
+     Fayl bo'lmasa tugma ko'rinmaydi va sayt xatosiz ishlayveradi. -->
 <audio id="track" src="audio/fon.m4a" loop preload="metadata"></audio>
 
 <button class="music" id="musicBtn" aria-pressed="false" aria-label="Musiqani yoqish" hidden>

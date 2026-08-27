@@ -1,5 +1,6 @@
 /* =========================================================
    Eldor Isarov — tug'ilgan kun sahifasi
+   Uslub: kirishda ochilgan kitobning ichi — qog'oz, siyoh, oltin.
    Sof JavaScript, tashqi kutubxonasiz.
    ========================================================= */
 
@@ -18,8 +19,6 @@ const CONFIG = {
     "Ba'zi insonlar bor — ular haqida gapirilganda ovoz o'zi *yumshaydi*. " +
     "Bugun ana shundaylardan birining kuni. Yillaringiz mana shu suratlardagidek " +
     "*yorug'*, dasturxoningiz doim to'kin, davrangiz esa doim *to'lib* tursin.",
-
-  marquee: "Tug'ilgan kuningiz muborak",
 };
 
 /* Rasmlar tartibi = galereyadagi tartib.
@@ -74,7 +73,16 @@ const io = new IntersectionObserver(
   { threshold: 0.15, rootMargin: "0px 0px -8% 0px" }
 );
 
-const watch = (sel) => $$(sel).forEach((n) => io.observe(n));
+/* Zaxira: IntersectionObserver bo'lmasa hamma narsa darrov
+   ko'rinadi. Aks holda eski brauzerda sahifa bo'm-bo'sh qolardi. */
+const watch = (sel) => {
+  const nodes = $$(sel);
+  if (!("IntersectionObserver" in window)) {
+    nodes.forEach((n) => n.classList.add("is-in"));
+    return;
+  }
+  nodes.forEach((n) => io.observe(n));
+};
 
 /* =========================================================
    2. KIRISH — video → kitob yopiladi → muqova → "Oching"
@@ -221,12 +229,8 @@ function buildTitle() {
 }
 
 function playHero() {
-  $("#topbar").classList.add("is-in");
-  $$(".hero .mask").forEach((m) => m.classList.add("is-in"));
+  $("#titul").classList.add("is-in");
   $$("#heroTitle .ch").forEach((c) => (c.style.transform = "none"));
-  $("#heroGlow").style.opacity = "1";
-  $("#heroStamp").classList.add("is-in");
-  $("#heroRule").classList.add("is-in");
 }
 
 /* =========================================================
@@ -254,56 +258,44 @@ function buildLead() {
 }
 
 /* =========================================================
-   4b. Yillar bo'limi: 1985 ——— 2026
+   4b. Raqamlar: yosh, yashab o'tilgan kunlar, tug'ilgan yil
    ========================================================= */
-function countTo(node, from, to, dur) {
-  if (REDUCED) { node.textContent = to; return; }
+
+/* 14245 → "14 245" (ingichka bo'shliq bilan) */
+const raqam = (n) => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, "\u2009");
+
+/* Tug'ilgan kundan bugungacha necha kun o'tgani */
+function yashagan() {
+  const t = CONFIG.tugilgan;
+  const boshi = new Date(t.yil, t.oy - 1, t.kun);
+  return Math.max(0, Math.floor((Date.now() - boshi) / 86400000));
+}
+
+function countTo(node, to, dur, fmt) {
+  if (REDUCED) { node.textContent = fmt(to); return; }
 
   const start = performance.now();
   (function tick(now) {
     const t = Math.min((now - start) / dur, 1);
     const eased = 1 - Math.pow(1 - t, 3);
-    node.textContent = Math.round(from + (to - from) * eased);
+    node.textContent = fmt(Math.round(to * eased));
     if (t < 1) requestAnimationFrame(tick);
   })(start);
 
   // Sahifa fonda bo'lsa rAF to'xtaydi — raqam yarim yo'lda qolmasin
-  setTimeout(() => { node.textContent = to; }, dur + 1500);
+  setTimeout(() => { node.textContent = fmt(to); }, dur + 1500);
 }
 
-function initYears() {
-  const sec = $("#years");
-  const from = CONFIG.tugilgan.yil;
-
-  $("#yearFrom").textContent = from;
-  $("#yearTo").textContent = from;
-  $("#yearsNote").textContent = `${YOSH} yil · ${SANA}`;
-
+function initFacts() {
   new IntersectionObserver((entries, obs) => {
     entries.forEach((e) => {
       if (!e.isIntersecting) return;
-      sec.classList.add("is-in");
-      countTo($("#yearTo"), from, BU_YIL, 1700);
+      countTo($("#factYears"), YOSH, 1200, String);
+      countTo($("#factDays"),  yashagan(), 1900, raqam);
+      countTo($("#factFrom"),  CONFIG.tugilgan.yil, 1600, String);
       obs.disconnect();
     });
-  }, { threshold: 0.35 }).observe(sec);
-}
-
-/* =========================================================
-   5. Yuguruvchi satr
-   ========================================================= */
-function buildMarquee() {
-  const track = $("#marqueeTrack");
-  const one = [];
-
-  for (let i = 0; i < 6; i++) {
-    one.push(el("span", null, CONFIG.marquee));
-    const dot = el("span"); dot.append(el("em", null, "◆"));
-    one.push(dot);
-  }
-  // Uzluksiz aylanish uchun ikki nusxa (animatsiya -50% ga suradi)
-  one.forEach((n) => track.append(n));
-  one.forEach((n) => track.append(n.cloneNode(true)));
+  }, { threshold: 0.4 }).observe($("#raqamlar"));
 }
 
 /* =========================================================
@@ -501,7 +493,7 @@ function initForm() {
     btn.disabled = true;
     btnTx.textContent = "Yuborilmoqda";
     note.className = "form__note is-in";
-    note.textContent = "Tilagingiz yuborilmoqda...";
+    note.textContent = "Yozilmoqda...";
 
     const yetdi = await yubor(ism, matn, hpVal);
 
@@ -511,12 +503,12 @@ function initForm() {
     form.reset();
     count.textContent = "0";
     btn.disabled = false;
-    btnTx.textContent = "Tilakni qoldirish";
+    btnTx.textContent = "Daftarga yozish";
 
     note.className = "form__note is-in " + (yetdi ? "is-ok" : "is-warn");
     note.textContent = yetdi
-      ? "Rahmat! Tilagingiz yetkazildi."
-      : "Tilagingiz shu sahifada saqlandi (yuborib bo'lmadi).";
+      ? "Rahmat! Yozganingiz daftarga tushdi."
+      : "Daftarga yozildi, lekin yuborib bo'lmadi.";
 
     fresh.scrollIntoView({ behavior: REDUCED ? "auto" : "smooth", block: "center" });
   });
@@ -538,50 +530,6 @@ function initScrollBits() {
       ticking = false;
     });
   }, { passive: true });
-}
-
-/* Galereya: scroll paytida rasm ramka ichida sekin siljiydi */
-function initParallax() {
-  if (REDUCED) return;
-
-  const frames = $$(".shot__frame");
-  let ticking = false;
-
-  function update() {
-    const vh = innerHeight;
-
-    frames.forEach((f) => {
-      const img = f.querySelector("img");
-      if (!img) return;
-
-      const r = f.getBoundingClientRect();
-      if (r.bottom < -200 || r.top > vh + 200) return;   // ko'rinmasa — hisoblamaymiz
-
-      const p = (r.top + r.height / 2 - vh / 2) / (vh / 2 + r.height / 2);
-      const shift = Math.max(-1, Math.min(1, p)) * -4;   // ±4% — ramkadan chiqmaydi
-      img.style.transform = `translate3d(0, ${shift.toFixed(2)}%, 0) scale(1.14)`;
-    });
-
-    ticking = false;
-  }
-
-  addEventListener("scroll", () => {
-    if (!ticking) { ticking = true; requestAnimationFrame(update); }
-  }, { passive: true });
-  addEventListener("resize", update, { passive: true });
-  update();
-}
-
-function initGlow() {
-  if (REDUCED || matchMedia("(hover: none)").matches) return;
-  const glow = $("#heroGlow");
-  const hero = $(".hero");
-
-  hero.addEventListener("mousemove", (e) => {
-    const r = hero.getBoundingClientRect();
-    glow.style.left = e.clientX - r.left + "px";
-    glow.style.top  = e.clientY - r.top + "px";
-  });
 }
 
 /* =========================================================
@@ -688,23 +636,18 @@ document.addEventListener("DOMContentLoaded", () => {
   $$("#heroTitle .mask")[1].dataset.word = CONFIG.familiya;
 
   $("#heroTitle").setAttribute("aria-label", `${CONFIG.ism} ${CONFIG.familiya}`);
-  $("#heroStamp").textContent   = CONFIG.tugilgan.yil;
-  $("#heroDate").textContent    = `${SANA} ${CONFIG.tugilgan.yil}`;
-  $("#heroAge").textContent     = `${YOSH} yosh`;
-  $("#topbarDate").textContent  = `${SANA} ${CONFIG.tugilgan.yil}`;
-  $("#footerYear").textContent  = BU_YIL;
+  $("#heroDate").textContent   = `${SANA} ${CONFIG.tugilgan.yil}`;
+  $("#heroAge").textContent    = `${YOSH} yosh`;
+  $("#footerYear").textContent = BU_YIL;
   document.title = `${CONFIG.ism} ${CONFIG.familiya} — Tug'ilgan kun`;
 
   buildTitle();
   buildLead();
-  buildMarquee();
   buildGallery();
-  initYears();
+  initFacts();
   Wishes.render();
   initForm();
   initScrollBits();
-  initParallax();
-  initGlow();
   Music.init();
 
   watch("[data-reveal]");
