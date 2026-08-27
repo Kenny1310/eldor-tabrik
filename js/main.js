@@ -393,19 +393,21 @@ const Lightbox = (() => {
 })();
 
 /* =========================================================
-   8. Tilaklar — brauzer xotirasida saqlanadi
-   ========================================================= */
-const Wishes = (() => {
-  const box = $("#wishes");
+   8. Mehmonlar daftari
 
-  function read() {
-    try { return JSON.parse(localStorage.getItem(STORE_KEY)) || []; }
-    catch { return []; }
-  }
-  function write(list) {
-    try { localStorage.setItem(STORE_KEY, JSON.stringify(list)); }
-    catch { /* xotira to'la yoki bloklangan — sahifa baribir ishlayveradi */ }
-  }
+   Tilaklar serverda (Netlify Blobs) turadi — shuning uchun bir
+   odam yozganini hamma ko'radi. Brauzer xotirasi faqat zaxira:
+   server javob bermasa oxirgi ko'rilgan ro'yxat qolaveradi.
+   ========================================================= */
+const API = "/.netlify/functions/tilak";
+
+const Wishes = (() => {
+  const box   = $("#wishes");
+  const count = $("#wishCount");
+
+  // Manzilga ?admin=... qo'shilsa har bir tilak ostida o'chirish
+  // tugmasi chiqadi. Kalitning to'g'riligini server tekshiradi.
+  const ADMIN = new URLSearchParams(location.search).get("admin");
 
   function sana(ts) {
     const d = new Date(ts);
@@ -420,25 +422,72 @@ const Wishes = (() => {
     who.append(el("span", "wish__when", sana(w.vaqt)));
 
     item.append(who, el("p", "wish__text", w.matn));
+
+    if (ADMIN && w.id) {
+      const btn = el("button", "wish__del", "O'chirish");
+      btn.type = "button";
+      btn.addEventListener("click", () => ochir(w.id, btn));
+      item.append(btn);
+    }
     return item;
   }
 
-  function render() {
+  function render(list) {
+    const arr = Array.isArray(list) ? list : [];
     box.textContent = "";
-    read().slice().reverse().forEach((w, i) => box.append(node(w, i * 0.06)));
+
+    count.textContent = arr.length
+      ? `${arr.length} kishi tabrikladi`
+      : "Hali hech kim yozmagan — birinchi bo'ling";
+
+    // Eng yangisi tepada
+    arr.slice().reverse().forEach((w, i) => box.append(node(w, Math.min(i, 8) * 0.06)));
+    saqla(arr);
   }
 
-  function add(ism, matn) {
-    const list = read();
-    list.push({ ism, matn, vaqt: Date.now() });
-    write(list);
+  const saqla = (list) => {
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(list)); } catch {}
+  };
+  const zaxira = () => {
+    try { return JSON.parse(localStorage.getItem(STORE_KEY)) || []; }
+    catch { return []; }
+  };
 
-    const fresh = node({ ism, matn, vaqt: Date.now() });
-    box.prepend(fresh);
-    return fresh;
+  /** Sahifa ochilganda serverdan olib keladi */
+  async function load() {
+    render(zaxira());                 // avval oxirgi ko'rilganini ko'rsatamiz
+    try {
+      const res = await fetch(API, { headers: { Accept: "application/json" } });
+      if (!res.ok) return;
+      const data = await res.json();
+      if (data && Array.isArray(data.tilaklar)) render(data.tilaklar);
+    } catch {
+      /* sayt lokal ochilgan — funksiya yo'q, zaxira qolaveradi */
+    }
   }
 
-  return { render, add };
+  async function ochir(id, btn) {
+    btn.disabled = true;
+    try {
+      const res = await fetch(
+        `${API}?id=${encodeURIComponent(id)}&kalit=${encodeURIComponent(ADMIN)}`,
+        { method: "DELETE" }
+      );
+      const data = await res.json();
+      if (data && data.ok) { render(data.tilaklar); return; }
+    } catch {}
+    btn.disabled = false;
+    btn.textContent = "O'chmadi";
+  }
+
+  /** Server ishlamasa tilak hech bo'lmasa shu telefonda ko'rinsin */
+  function localAdd(ism, matn) {
+    const list = zaxira();
+    list.push({ id: "local-" + Date.now(), ism, matn, vaqt: Date.now() });
+    render(list);
+  }
+
+  return { render, load, localAdd };
 })();
 
 /* =========================================================
@@ -449,14 +498,15 @@ const Wishes = (() => {
     tilak baribir sahifada ko'rinadi. */
 async function yubor(ism, matn, hp) {
   try {
-    const res = await fetch("/.netlify/functions/tilak", {
+    const res = await fetch(API, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ism, matn, website: hp }),
     });
-    return res.ok;
+    if (!res.ok) return null;
+    return await res.json();
   } catch {
-    return false;
+    return null;                 // lokal ochilgan yoki internet yo'q
   }
 }
 
@@ -495,10 +545,11 @@ function initForm() {
     note.className = "form__note is-in";
     note.textContent = "Yozilmoqda...";
 
-    const yetdi = await yubor(ism, matn, hpVal);
+    const javob = await yubor(ism, matn, hpVal);
+    const yetdi = Boolean(javob && javob.ok);
 
-    // Yuborilgan-yuborilmaganidan qat'i nazar, sahifada ko'rsatamiz
-    const fresh = Wishes.add(ism, matn);
+    if (yetdi) Wishes.render(javob.tilaklar);
+    else       Wishes.localAdd(ism, matn);   // hech bo'lmasa shu telefonda
 
     form.reset();
     count.textContent = "0";
@@ -507,10 +558,13 @@ function initForm() {
 
     note.className = "form__note is-in " + (yetdi ? "is-ok" : "is-warn");
     note.textContent = yetdi
-      ? "Rahmat! Yozganingiz daftarga tushdi."
-      : "Daftarga yozildi, lekin yuborib bo'lmadi.";
+      ? "Rahmat! Yozganingiz daftarda turibdi."
+      : "Yozganingiz shu telefonda saqlandi (serverga yetmadi).";
 
-    fresh.scrollIntoView({ behavior: REDUCED ? "auto" : "smooth", block: "center" });
+    const birinchi = $("#wishes").firstElementChild;
+    if (birinchi) {
+      birinchi.scrollIntoView({ behavior: REDUCED ? "auto" : "smooth", block: "center" });
+    }
   });
 }
 
@@ -645,7 +699,7 @@ document.addEventListener("DOMContentLoaded", () => {
   buildLead();
   buildGallery();
   initFacts();
-  Wishes.render();
+  Wishes.load();
   initForm();
   initScrollBits();
   Music.init();

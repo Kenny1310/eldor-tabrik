@@ -49,11 +49,26 @@ bilan rostlanadi.
    Telegram'ga shular orqali keladi:
    - `TELEGRAM_BOT_TOKEN` — @BotFather bergan token
    - `TELEGRAM_CHAT_ID` — xabar keladigan chat
+   - `ADMIN_KALIT` — ixtiyoriy, o'zingiz o'ylab topasiz (masalan `eldor2026`)
+
    Bu qiymatlar hech qachon brauzerga tushmaydi, faqat serverda turadi.
+   **O'zgaruvchi qo'shgandan keyin albatta qayta deploy qiling** —
+   Netlify ularni allaqachon qurilgan deploy'ga qo'shmaydi.
 3. **Sayt manzili ma'lum bo'lgach `index.html` dagi uchta manzilni
    yangilang** — `og:url`, `og:image`, `twitter:image`. Hozir ular
    `https://eldor-tabrik.netlify.app/` deb turibdi. Yangilanmasa
    Telegramdagi havola kartochkasi rasmsiz chiqadi.
+
+## Mehmonlar daftari
+
+Tilaklar **serverda** (Netlify Blobs) saqlanadi, shuning uchun bir
+odam yozganini hamma ko'radi — dadangiz ham. Brauzer xotirasi faqat
+zaxira: server javob bermasa oxirgi ko'rilgan ro'yxat qolaveradi.
+
+Nomaqbul yozuv chiqib qolsa: manzil oxiriga `?admin=KALIT` qo'shib
+oching (`ADMIN_KALIT` da yozgan kalitingiz) — har bir tilak ostida
+"O'chirish" tugmasi chiqadi. Kalitning to'g'riligini server tekshiradi,
+ya'ni tugmani brauzerda "ochib olib" bo'lmaydi.
 
 ## Sinash
 

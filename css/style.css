@@ -567,8 +567,28 @@ main{ position:relative; z-index:1; }
 .form__note.is-warn{ color:var(--seal); }
 
 /* Yozilgan tilaklar */
+.wishes__count{
+  margin:clamp(3rem,7vw,5rem) 0 0;
+  font-family:var(--sans);
+  font-size:.66rem; letter-spacing:.26em; text-transform:uppercase;
+  color:var(--ink-faint);
+}
+.wishes__count:empty{ display:none; }
+
+/* Faqat ?admin=... bilan kirilganda ko'rinadi */
+.wish__del{
+  margin-top:.7em; padding:.35em .9em;
+  font-family:var(--sans); font-size:.6rem;
+  letter-spacing:.2em; text-transform:uppercase;
+  color:var(--seal); background:none;
+  border:1px solid var(--edge); border-radius:99px; cursor:pointer;
+  transition:border-color .3s, color .3s;
+}
+.wish__del:hover{ border-color:var(--seal); }
+.wish__del:disabled{ opacity:.45; cursor:default; }
+
 .wishes{
-  margin-top:clamp(3rem,7vw,5rem);
+  margin-top:clamp(1.4rem,3vw,2rem);
   display:grid; gap:clamp(1.6rem,3.5vw,2.4rem);
 }
 .wish{
